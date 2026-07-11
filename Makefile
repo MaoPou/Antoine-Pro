@@ -15,6 +15,7 @@ all:
 	# make TrollStore tipa
 	@ln -sf build/Payload Payload
 	zip -r9 build/AntoineTrollStore.tipa Payload
+	cp build/AntoineTrollStore.tipa build/Antoine.ipa
 	@rm -rf Payload
 
 	# lol
@@ -30,4 +31,5 @@ all:
 	@rm -rf build/layout
 
 	@echo TrollStore .tipa written to build/AntoineTrollStore.tipa
+	@echo Unsigned .ipa written to build/Antoine.ipa
 	@echo Jailbroken .deb written to build/Antoine.deb

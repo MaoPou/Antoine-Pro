@@ -263,6 +263,10 @@ extension StreamViewController {
             .space(.flexible),
             scrollDownBarButtonItem,
             .space(.flexible),
+            UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up.on.square"),
+                            style: .plain, target: self,
+                            action: #selector(exportAllLogs)),
+            .space(.flexible),
             UIBarButtonItem(image: UIImage(systemName: "xmark.circle"),
                             style: .done, target: self,
                             action: #selector(clearAll)),
@@ -284,6 +288,21 @@ extension StreamViewController {
         var snapshot: NSDiffableDataSourceSnapshot<Section, StreamEntry> = .init()
         snapshot.appendSections([.main])
         dataSourceApply(snapshot: snapshot)
+    }
+
+    @objc
+    func exportAllLogs() {
+        // Include entries waiting for the next UI refresh as well as visible entries.
+        let entries = dataSource.snapshot().itemIdentifiers + batch
+        guard !entries.isEmpty else {
+            errorAlert(title: .localized("No Logs to Export"), description: nil)
+            return
+        }
+
+        let bounds = view.bounds
+        export(entries: entries,
+               senderView: view,
+               senderRect: CGRect(x: bounds.midX, y: bounds.midY, width: 0, height: 0))
     }
 	
     func dataSourceApply(snapshot: NSDiffableDataSourceSnapshot<Section, StreamEntry>) {

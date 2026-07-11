@@ -1,0 +1,2 @@
+NSLocationAlwaysAndWhenInUseUsageDescription = "为了在后台继续接收日志，Antoine 需要位置权限以保持应用在后台运行。";
+NSLocationWhenInUseUsageDescription = "为了在后台继续接收日志，Antoine 需要位置权限以保持应用在后台运行。";

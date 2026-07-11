@@ -81,6 +81,99 @@ extension UIViewController {
             errorAlert(title: .localized("Error creating log file"), description: error.localizedDescription)
         }
     }
+
+    func export(entries: [any Entry], senderView: UIView, senderRect: CGRect) {
+        do {
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = [.prettyPrinted, .withoutEscapingSlashes, .sortedKeys]
+            encoder.dateEncodingStrategy = .iso8601
+
+            let date = DateFormatter(dateFormat: "yyyy-MM-dd_HH-mm-ss").string(from: Date())
+            let fileURL = FileManager.default.temporaryDirectory
+                .appendingPathComponent("Antoine-Logs-\(date)")
+                .appendingPathExtension("zip")
+            var archive = SimpleZipArchive()
+
+            for (index, entry) in entries.enumerated() {
+                let data = try encoder.encode(CodableEntry(streamEntry: entry))
+                let process = entry.process.replacingOccurrences(
+                    of: "[^A-Za-z0-9._-]", with: "_", options: .regularExpression)
+                archive.add(data: data, named: String(format: "%06d-%@.antoinelog", index + 1, process))
+            }
+
+            try archive.finalizedData().write(to: fileURL, options: .atomic)
+            let activityController = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
+            activityController.popoverPresentationController?.sourceView = senderView
+            activityController.popoverPresentationController?.sourceRect = senderRect
+            present(activityController, animated: true)
+        } catch {
+            errorAlert(title: .localized("Error creating log archive"), description: error.localizedDescription)
+        }
+    }
+}
+
+/// A small ZIP writer using the uncompressed ZIP format, avoiding an extra dependency.
+private struct SimpleZipArchive {
+    private struct FileRecord {
+        let name: Data
+        let crc32: UInt32
+        let size: UInt32
+        let offset: UInt32
+    }
+
+    private(set) var data = Data()
+    private var records: [FileRecord] = []
+
+    mutating func add(data fileData: Data, named name: String) {
+        let nameData = Data(name.utf8)
+        let record = FileRecord(name: nameData, crc32: fileData.crc32,
+                                size: UInt32(fileData.count), offset: UInt32(data.count))
+        data.appendLittleEndian(UInt32(0x04034b50))
+        data.appendLittleEndian(UInt16(20)); data.appendLittleEndian(UInt16(0))
+        data.appendLittleEndian(UInt16(0)); data.appendLittleEndian(UInt16(0)); data.appendLittleEndian(UInt16(0))
+        data.appendLittleEndian(record.crc32); data.appendLittleEndian(record.size); data.appendLittleEndian(record.size)
+        data.appendLittleEndian(UInt16(nameData.count)); data.appendLittleEndian(UInt16(0))
+        data.append(nameData); data.append(fileData)
+        records.append(record)
+    }
+
+    func finalizedData() -> Data {
+        var result = data
+        let directoryOffset = result.count
+        var directory = Data()
+        for record in records {
+            directory.appendLittleEndian(UInt32(0x02014b50))
+            directory.appendLittleEndian(UInt16(20)); directory.appendLittleEndian(UInt16(20))
+            directory.appendLittleEndian(UInt16(0)); directory.appendLittleEndian(UInt16(0))
+            directory.appendLittleEndian(UInt16(0)); directory.appendLittleEndian(UInt16(0))
+            directory.appendLittleEndian(record.crc32); directory.appendLittleEndian(record.size); directory.appendLittleEndian(record.size)
+            directory.appendLittleEndian(UInt16(record.name.count)); directory.appendLittleEndian(UInt16(0)); directory.appendLittleEndian(UInt16(0))
+            directory.appendLittleEndian(UInt16(0)); directory.appendLittleEndian(UInt16(0)); directory.appendLittleEndian(UInt32(0))
+            directory.appendLittleEndian(record.offset); directory.append(record.name)
+        }
+        result.append(directory)
+        result.appendLittleEndian(UInt32(0x06054b50)); result.appendLittleEndian(UInt16(0)); result.appendLittleEndian(UInt16(0))
+        result.appendLittleEndian(UInt16(records.count)); result.appendLittleEndian(UInt16(records.count))
+        result.appendLittleEndian(UInt32(directory.count)); result.appendLittleEndian(UInt32(directoryOffset))
+        result.appendLittleEndian(UInt16(0))
+        return result
+    }
+}
+
+private extension Data {
+    mutating func appendLittleEndian<T: FixedWidthInteger>(_ value: T) {
+        var littleEndian = value.littleEndian
+        Swift.withUnsafeBytes(of: &littleEndian) { append(contentsOf: $0) }
+    }
+
+    var crc32: UInt32 {
+        var crc = UInt32.max
+        for byte in self {
+            crc ^= UInt32(byte)
+            for _ in 0..<8 { crc = (crc >> 1) ^ (0xEDB88320 & (0 &- (crc & 1))) }
+        }
+        return ~crc
+    }
 }
 
 extension NSDiffableDataSourceSnapshot {

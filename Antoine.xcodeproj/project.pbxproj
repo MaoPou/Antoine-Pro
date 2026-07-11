@@ -94,6 +94,9 @@
 		CE4DFBB429ACC7EC0024E0CF /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		CE4DFBB529ACC7EC0024E0CF /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		CE4DFBB629ACC7EC0024E0CF /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		CEA1000129ACC7EC0024E0CF /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		CEA1000229ACC7EC0024E0CF /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		CEA1000329ACC7EC0024E0CF /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		CE4E0F2129349B930070E09A /* StreamEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamEvent.swift; sourceTree = "<group>"; };
 		CE5212402930A29B00521064 /* Antoine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Antoine.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE5212432930A29B00521064 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -388,6 +391,7 @@
 				nl,
 				ko,
 				"zh-Hant",
+				"zh-Hans",
 			);
 			mainGroup = CE5212372930A29B00521064;
 			packageReferences = (
@@ -476,6 +480,7 @@
 				CE16F2D329A94F9A00CE619A /* nl */,
 				CE06B75229A9EDD900306677 /* ko */,
 				CE4DFBB529ACC7EC0024E0CF /* zh-Hant */,
+				CEA1000229ACC7EC0024E0CF /* zh-Hans */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -492,6 +497,7 @@
 				CE16F2D229A94F9A00CE619A /* nl */,
 				CE06B75129A9EDD800306677 /* ko */,
 				CE4DFBB429ACC7EC0024E0CF /* zh-Hant */,
+				CEA1000129ACC7EC0024E0CF /* zh-Hans */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -508,6 +514,7 @@
 				CE16F2D429A94F9B00CE619A /* nl */,
 				CE06B75329A9EDD900306677 /* ko */,
 				CE4DFBB629ACC7EC0024E0CF /* zh-Hant */,
+				CEA1000329ACC7EC0024E0CF /* zh-Hans */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";

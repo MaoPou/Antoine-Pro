@@ -1,4 +1,4 @@
-name: CI
+name: Build IPA
 
 on:
   push:
@@ -22,28 +22,24 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         
       - name: Install needed tools
         run: |
           brew install ldid dpkg
           
-      - name: Select Xcode version (14.0)
-        run: |
-          sudo xcode-select --switch /Applications/Xcode_14.0.app
-          
       - name: Build & Sign Application
         run: |
           make
           
-      - name: Upload TrollStore .tipa
-        uses: actions/upload-artifact@v3.1.0
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
         with:
-          name: AntoineTrollstore.tipa
-          path: ${{ github.workspace }}/build/AntoineTrollstore.tipa
+          name: Antoine-IPA
+          path: ${{ github.workspace }}/build/Antoine.ipa
           
       - name: Upload deb for Jailbroken devices
-        uses: actions/upload-artifact@v3.1.0
+        uses: actions/upload-artifact@v4
         with:
           name: Antoine
           path: ${{ github.workspace }}/build/Antoine.deb
