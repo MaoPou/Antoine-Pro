@@ -745,8 +745,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/hbang/Alderis";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
+				kind = revision;
+				revision = 92cfde8ee6e76fa28378c644b9be81a5dcf233b0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
